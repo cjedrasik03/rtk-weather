@@ -1,0 +1,14 @@
+.searchContainer {
+  max-width: auto;
+}
+
+.primaryBackground {
+  background-color: lightblue;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 25px;
+}
+
+.resultDisplayed {
+  max-width: 800px;
+}
