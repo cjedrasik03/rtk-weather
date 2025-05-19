@@ -2,51 +2,65 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import {Sparklines } from 'react-sparklines';
+import { getLocation, fetchWeather } from './store/slices/getWeather'; 
 
 export default function App() {
+  // for the city search input field
   const [inputValue, setInputValue] = useState('');
-  const [error, setError] = useState('');
 
-  // this detemines what the submit button does and under what conditions
-const handleSearch = (e) => {
+  // for running actions
+  const dispatch = useDispatch();
+  
 
+  // this handles when the search button is clicked
+const handleSearch = async (e) => {
   // this prevents the page from reseting
   e.preventDefault();
+
+    try {
+    // gets lat/lon from city name searched (first thunk)
+    const location = await dispatch(getLocation(inputValue)).unwrap();
+
+    // gets the weather using the coordinates (second thunk)
+    await dispatch(fetchWeather({ lat: location.lat, lon: location.lon }));
+  } catch (error) {
+    // for possible error/s
+    console.error('Error fetching weather:', error);
+  }
 };
-  const handleChange = (e) => { 
-    setInputValue(e.target.value);
-    console.log(inputValue);
-}
+
   return (
     <>
-      {/* Primary background */}
       <Container fluid className="primaryBackground min-vh-100 py-5">
-        
-        {/* Search box centered */}
         <Row className="justify-content-center mb-4">
           <Col xs={12} md={6} lg={6}>
             <div className="bg-primary-subtle border border-primary-subtle rounded-4 p-4">
-                <Row className="g-2 align-items-center">
-                  <Col xs={12} md={9}>
-                    <input
-                      size="lg"
-                      type="text"
-                      placeholder="Search a city"
-                      value={inputValue}
-                      onChange={handleChange}
-                    />
-                  </Col>
-                  <Col xs={12} md={3}>
-                    <button className="w-100" variant="primary" size="lg">
-                      Search
-                    </button>
-                  </Col>
-                </Row>
+              <Row className="g-2 align-items-center">
+                <Col xs={12} md={9}>
+                  <input
+                    className="form-control form-control-lg"
+                    type="text"
+                    placeholder="Search a city"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                  />
+                </Col>
+                <Col xs={12} md={3}>
+                  <button
+                    onClick={handleSearch}
+                    className="btn btn-primary btn-lg w-100"
+                  >
+                    Search
+                  </button>
+                </Col>
+              </Row>
             </div>
           </Col>
         </Row>
 
-        {/* Forecast boxes */}
+        {/* Forecast display */}
         <Row className="justify-content-center">
           <Col md={8}>
             <Container className="bg-primary-subtle border border-primary-subtle rounded-4 p-3 mb-2">
@@ -58,7 +72,6 @@ const handleSearch = (e) => {
               </Row>
             </Container>
           </Col>
-          {/* Add more forecast boxes as needed */}
         </Row>
       </Container>
     </>
