@@ -2,7 +2,7 @@ import axios from 'axios';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // Initial state for weather data
-const dataState = { 
+const initialState = { 
   city: '',
   temperature: [],
   pressure: [],
@@ -17,7 +17,7 @@ export const getLocation = createAsyncThunk(
   async (city) => {
     try {
       const response = await axios.get(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${process.env.NEXT_PUBLIC_API_KEY}`
+        `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${process.env.NEXT_PUBLIC_API_KEY}`
       );
 
       const data = response.data;
@@ -37,7 +37,8 @@ export const getLocation = createAsyncThunk(
 // Second thunk: get forecast by lat/lon cords
 export const fetchWeather = createAsyncThunk(
   'weather/fetchWeather',
-  async ({ lat, lon }) => {
+
+  async ({ lat, lon }) => { //  pass in { lat, lon } from handleSearch
     const response = await axios.get(
       `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.NEXT_PUBLIC_API_KEY}&units=imperial`
     );
@@ -50,7 +51,7 @@ export const fetchWeather = createAsyncThunk(
 const weatherSlice = createSlice({
 
   name: 'weather',
-  initialState: dataState,
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     
