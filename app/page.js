@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import {Sparklines } from 'react-sparklines';
+import { Sparklines, SparklinesLine, SparklinesReferenceLine, SparklinesSpots } from 'react-sparklines';
 import { getLocation, fetchWeather } from './store/slices/getWeather'; 
 
 export default function App() {
@@ -95,12 +95,57 @@ const dataOrganized = weatherData?.list?.length > 0
         <Row className="justify-content-center">
           <Col md={8}>
             <Container className="bg-primary-subtle border border-primary-subtle rounded-4 p-3 mb-2">
-              <div className="p-2 text-center">{inputValue}</div>
+              <div className="p-2 text-center fw-bold text-capitalize">{inputValue}</div>
                 {weatherData?.list?.length > 0 && (
-                <Row className="d-flex justify-content-center align-items-center">
-                  <Col className="m-3">Temperature: {dataOrganized.temp}°F</Col>
-                  <Col className="m-3">Humidity: {dataOrganized.humidity}%</Col>
-                  <Col className="m-3">Pressure: {dataOrganized.pressure} hPa</Col>
+                <Row className="d-flex justify-content-center align-items-center">      
+
+              {/* Temp. */}      
+
+                  <Col className="m-3">
+                      <Sparklines
+                      data={dataOrganized.temp}
+                      width={100}
+                      height={35}
+                      >
+                      <SparklinesLine style={{ fill: "#002ea1" }} />
+                      <SparklinesReferenceLine type="mean" />
+                      </Sparklines>
+                      <p className='text-sm text-gray-700 text-center fw-bold'>
+                        Temperature °F:
+                      </p>
+                    </Col>
+
+              {/* Humi. */}  
+
+                  <Col className="m-3">
+                      <Sparklines
+                      data={dataOrganized.humidity}
+                      width={100}
+                      height={35}
+                      >
+                      <SparklinesLine style={{ fill: "#002ea1" }} />
+                      <SparklinesReferenceLine type="mean" />
+                      </Sparklines>
+                      <p className='text-sm text-gray-700 text-center fw-bold'>
+                        Humidity %
+                      </p>
+                    </Col>
+
+              {/* Pres. */}    
+
+                  <Col className="m-3">
+                      <Sparklines
+                      data={dataOrganized.pressure}
+                      width={100}
+                      height={35}
+                      >
+                      <SparklinesLine style={{ fill: "#002ea1" }} />
+                      <SparklinesReferenceLine type="mean" />
+                      </Sparklines>
+                      <p className='text-sm text-gray-700 text-center fw-bold'>
+                        Pressure hPa
+                      </p>
+                    </Col>
                 </Row>
               )}
             </Container>
